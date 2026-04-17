@@ -8,11 +8,17 @@ func handleQuery(w dns.ResponseWriter, r *dns.Msg) {
 	command, location := parseQuery(name)
 	locTimezone := getTime(location)
 	var answer string
-	if command == "time" {
-		answer = (locTimezone)
-	} else {
-		answer = "error: unknown command"
-	}
+
+	switch command {
+	case "time":
+		answer = getTime(location)
+	case "weather":
+		_, lat, lon := findLocation(location)
+		answer = getWeather(lat, lon)
+	case "pi":
+		answer = getPi(location)
+	default:
+		answer = getHelp()
 
 	m := new(dns.Msg)
 	m.SetReply(r)
