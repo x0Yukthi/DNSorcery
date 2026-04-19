@@ -7,6 +7,14 @@ import (
 	"github.com/miekg/dns"
 )
 
+var validCommands = map[string]bool{
+	"time":    true,
+	"weather": true,
+	"pi":      true,
+	"country": true,
+	"convert": true,
+}
+
 func parseQuery(domain string) (command, location string) {
 	domain = strings.TrimSuffix(domain, ".")
 	parts := strings.Split(domain, ".")
@@ -17,7 +25,11 @@ func parseQuery(domain string) (command, location string) {
 	strings.Join(parts[1:], " ")
 	location = strings.Join(parts[1:], " ")
 
-	if command != "time" && command != "weather" {
+	if !validCommands[command] {
+		return "", ""
+	}
+
+	if location == "" && command != "ip" {
 		return "", ""
 	}
 
