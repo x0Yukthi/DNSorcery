@@ -17,6 +17,8 @@ func handleQuery(w dns.ResponseWriter, r *dns.Msg) {
 		answer = getWeather(lat, lon)
 	case "pi":
 		answer = getPi(location)
+	case "country":
+		answer = getCountry(location)
 	default:
 		answer = getHelp()
 
