@@ -19,6 +19,8 @@ func handleQuery(w dns.ResponseWriter, r *dns.Msg) {
 		answer = getPi(location)
 	case "country":
 		answer = getCountry(location)
+	case "crypto":
+		answer = getCrypto(location)
 	default:
 		answer = getHelp()
 
