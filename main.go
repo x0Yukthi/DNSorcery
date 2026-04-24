@@ -13,6 +13,7 @@ var validCommands = map[string]bool{
 	"pi":      true,
 	"country": true,
 	"convert": true,
+	"crypto": true,
 }
 
 func parseQuery(domain string) (command, location string) {
