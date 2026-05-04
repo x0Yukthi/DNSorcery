@@ -13,32 +13,35 @@ var validCommands = map[string]bool{
 	"pi":      true,
 	"country": true,
 	"convert": true,
-	"crypto": true,
+	"crypto":  true,
+	"uuid":    true,
+}
+var noArgsOK = map[string]bool{
+	"uuid": true,
 }
 
-func parseQuery(domain string) (command, location string) {
+func parseQuery(domain string) (command, args string) {
 	domain = strings.TrimSuffix(domain, ".")
-	parts := strings.Split(domain, ".")
-	if len(parts) < 2 {
+	parts := strings.SplitN(domain, ".", 2)
+
+	if len(parts) < 1 {
 		return "", ""
 	}
-	command = parts[0]
-	strings.Join(parts[1:], " ")
-	location = strings.Join(parts[1:], " ")
 
+	command = strings.ToLower(parts[0])
 	if !validCommands[command] {
 		return "", ""
 	}
 
-	if location == "" && command != "ip" {
+	if len(parts) == 2 {
+		args = parts[1]
+	}
+
+	if args == "" && !noArgsOK[command] {
 		return "", ""
 	}
 
-	if location == "" {
-		return "", ""
-	}
-
-	return command, location
+	return command, args
 }
 
 func main() {
@@ -49,9 +52,8 @@ func main() {
 		Net:  "udp",
 	}
 
-	fmt.Println("DNS server running on :5053")
-	err := server.ListenAndServe()
-	if err != nil {
+	fmt.Println("DNSorcery running on :5053")
+	if err := server.ListenAndServe(); err != nil {
 		fmt.Println("error:", err)
 	}
 }
